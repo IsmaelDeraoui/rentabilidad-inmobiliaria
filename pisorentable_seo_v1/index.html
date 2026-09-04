@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PisoRentable — Calculadora de rentabilidad inmobiliaria</title>
+<meta name="description" content="Calcula gratis la rentabilidad real de un piso antes de comprarlo. Precio máximo, alquiler mínimo, hipoteca, cashflow y rentabilidad neta.">
+<style>
+:root{--navy:#10233d;--blue:#1769e0;--green:#16a05d;--green2:#0b854a;--bg:#f5f8fc;--muted:#667085;--line:#dce4ee;--purple:#6840d8}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--navy);background:var(--bg)}
+a{text-decoration:none;color:inherit}.wrap{max-width:1180px;margin:auto;padding:0 22px}
+header{height:72px;background:#fff;border-bottom:1px solid #edf1f6;display:flex;align-items:center;position:sticky;top:0;z-index:10}
+.nav{display:flex;align-items:center;justify-content:space-between;width:100%}.logo{font-weight:900;font-size:24px;letter-spacing:-1px;display:flex;align-items:center;gap:9px}.logo-mark{width:36px;height:36px;border-radius:11px;background:linear-gradient(135deg,#1d73ed,#19a960);display:grid;place-items:center;color:white;font-size:20px}.logo span{color:var(--green)}
+.menu{display:flex;gap:28px;font-size:14px;font-weight:700}.cta{background:var(--green);color:white;padding:12px 18px;border-radius:10px;font-weight:800}
+.hero{background:linear-gradient(110deg,#eef6ff 0%,#fff 48%,#eaf8f1 100%);padding:56px 0 76px;position:relative;overflow:hidden}.hero:after{content:"";position:absolute;width:520px;height:520px;border-radius:50%;right:-190px;top:-260px;background:#dcecff;opacity:.55}.eyebrow{display:inline-flex;background:#fff3cf;color:#8a5b00;padding:8px 13px;border-radius:999px;font-size:13px;font-weight:900}.hero h1{font-size:52px;line-height:1.03;letter-spacing:-2px;max-width:720px;margin:17px 0 14px}.hero p{font-size:19px;color:#526071;max-width:680px;margin:0}.checks{display:flex;gap:22px;flex-wrap:wrap;margin-top:24px}.checks span{font-weight:750;font-size:14px}.checks b{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--navy);color:white;margin-right:7px}
+.app{margin-top:-48px;position:relative;z-index:3}.card{background:#fff;border:1px solid #e2e8f0;border-radius:18px;box-shadow:0 14px 40px #10233d16}.calculator{display:grid;grid-template-columns:1fr 1fr;overflow:hidden}.panel{padding:28px}.panel:first-child{border-right:1px solid #e5eaf0}.title{display:flex;gap:12px;align-items:center;margin-bottom:22px}.num{width:32px;height:32px;border-radius:50%;background:var(--green);color:#fff;display:grid;place-items:center;font-weight:900}.title h2{font-size:19px;margin:0}.title p{margin:2px 0 0;color:var(--muted);font-size:13px}
+.section{font-weight:850;margin:20px 0 11px;font-size:14px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}.field label{display:block;font-size:12px;font-weight:800;margin-bottom:6px;color:#344054}.input{display:flex;border:1px solid #cfd8e3;border-radius:9px;background:#fff;overflow:hidden}.input input,.input select{border:0;outline:0;width:100%;padding:11px 10px;font:inherit;color:var(--navy);min-width:0}.suffix{padding:11px 10px;color:#667085;background:#f8fafc;font-weight:800;font-size:12px}.calc{width:100%;border:0;background:linear-gradient(90deg,var(--green),#0cb766);color:#fff;padding:14px;border-radius:10px;font-size:16px;font-weight:900;margin-top:20px;cursor:pointer}.privacy{text-align:center;color:#7b8797;font-size:11px;margin-top:9px}
+.status{padding:17px;border-radius:12px;background:#eaf8f0;border:1px solid #cbead8}.status strong{font-size:20px}.status p{margin:5px 0 0;color:#526071;font-size:13px}.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:12px}.metric{background:#f5f8fc;border-radius:10px;padding:13px}.metric small{display:block;color:#667085;font-weight:700;font-size:11px}.metric strong{display:block;font-size:22px;margin-top:4px}.positive{color:#0b8c4c}.negative{color:#c0392b}.recommend{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}.rec{padding:14px;border-radius:11px;background:#effaf4;border:1px solid #d6f0e1}.rec.purple{background:#f3efff;border-color:#e4dbff}.rec small{font-weight:700;color:#667085}.rec strong{display:block;font-size:21px;margin-top:4px;color:#10834a}.rec.purple strong{color:var(--purple)}.tip{margin-top:12px;background:#f1f6ff;border-radius:11px;padding:13px;font-size:13px;color:#44546a}.tip b{color:var(--navy)}
+.premium{margin-top:20px;padding:28px;background:linear-gradient(120deg,#f1efff,#f8f7ff);border:1px solid #ddd5ff;border-radius:18px;display:flex;align-items:center;justify-content:space-between;gap:20px}.premium h2{margin:0 0 5px;font-size:22px}.premium p{margin:0;color:#596579}.premium ul{margin:12px 0 0;padding:0;list-style:none;display:flex;gap:14px;flex-wrap:wrap;color:#4b3ba2;font-size:12px;font-weight:750}.premium button{border:0;background:var(--purple);color:#fff;border-radius:10px;padding:14px 20px;font-weight:900;font-size:14px;white-space:nowrap}
+.features{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;padding:30px 0 45px}.feature{padding:14px}.icon{font-size:26px}.feature h3{font-size:14px;margin:7px 0 4px}.feature p{font-size:12px;color:#667085;margin:0;line-height:1.5}
+footer{background:#0d1d32;color:#d9e2ef;padding:28px 0}.foot{display:flex;justify-content:space-between;gap:20px;font-size:12px}.foot .logo{color:white;font-size:18px}.legal{color:#93a4ba}
+@media(max-width:850px){.calculator{grid-template-columns:1fr}.panel:first-child{border-right:0;border-bottom:1px solid #e5eaf0}.hero h1{font-size:40px}.menu{display:none}.premium{flex-direction:column;align-items:flex-start}.features{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.hero{padding-top:38px}.hero h1{font-size:34px}.grid,.metrics,.recommend{grid-template-columns:1fr}.panel{padding:20px}.features{grid-template-columns:1fr}.foot{flex-direction:column}}
+</style>
+</head>
+<body>
+<header><div class="wrap nav">
+<a class="logo" href="#"><span class="logo-mark">⌂</span>Piso<span>Rentable</span></a>
+<nav class="menu"><a href="#calculadora">Calculadora</a><a href="#como">Cómo funciona</a><a href="#ventajas">Ventajas</a><a href="#premium">Informe Premium</a></nav>
+<a class="cta" href="#premium">Informe PRO</a>
+</div></header>
+
+<section class="hero"><div class="wrap">
+<div class="eyebrow">⚡ Calcula · Analiza · Decide</div>
+<h1>¿Es buen momento para comprar este piso?</h1>
+<p>Analiza la rentabilidad real de cualquier inmueble en menos de 1 minuto y descubre cuánto deberías pagar para que la operación tenga sentido.</p>
+<div class="checks"><span><b>✓</b>Sin registros</span><span><b>✓</b>Resultados inmediatos</span><span><b>✓</b>100% gratis</span></div>
+</div></section>
+
+<main class="wrap app" id="calculadora">
+<div class="card calculator">
+<section class="panel">
+<div class="title"><div class="num">1</div><div><h2>Introduce los datos</h2><p>Cuanto más precisos, mejor será la estimación.</p></div></div>
+<div class="section">🏠 Compra</div>
+<div class="grid">
+<div class="field"><label>Precio de compra</label><div class="input"><input id="price" type="number" value="150000"><span class="suffix">€</span></div></div>
+<div class="field"><label>Gastos de compra</label><div class="input"><input id="buyPct" type="number" value="10" step=".1"><span class="suffix">%</span></div></div>
+</div>
+<div class="section">🔧 Reforma y alquiler</div>
+<div class="grid">
+<div class="field"><label>Coste de reforma</label><div class="input"><input id="reno" type="number" value="0"><span class="suffix">€</span></div></div>
+<div class="field"><label>Alquiler mensual estimado</label><div class="input"><input id="rent" type="number" value="850"><span class="suffix">€/mes</span></div></div>
+<div class="field"><label>Meses sin alquilar</label><div class="input"><input id="vacancy" type="number" value="1" min="0" max="12"><span class="suffix">meses</span></div></div>
+<div class="field"><label>Otros gastos anuales</label><div class="input"><input id="expenses" type="number" value="1200"><span class="suffix">€/año</span></div></div>
+</div>
+<div class="section">🏦 Financiación (opcional)</div>
+<div class="grid">
+<div class="field"><label>Entrada</label><div class="input"><input id="down" type="number" value="30000"><span class="suffix">€</span></div></div>
+<div class="field"><label>Interés hipotecario</label><div class="input"><input id="rate" type="number" value="3" step=".1"><span class="suffix">%</span></div></div>
+<div class="field"><label>Plazo</label><div class="input"><input id="years" type="number" value="25"><span class="suffix">años</span></div></div>
+</div>
+<button class="calc" onclick="calculate()">▣ &nbsp; Calcular rentabilidad <span>→</span></button>
+<div class="privacy">🔒 Tus datos se calculan en tu navegador y no se envían a ningún servidor.</div>
+</section>
+
+<section class="panel">
+<div class="title"><div class="num">2</div><div><h2>Resultados principales</h2><p>Una primera lectura de la operación.</p></div></div>
+<div id="status" class="status"><strong>Introduce tus datos y calcula</strong><p>Verás aquí la valoración de la operación.</p></div>
+<div class="metrics">
+<div class="metric"><small>Rentabilidad bruta</small><strong id="gross">—</strong></div>
+<div class="metric"><small>Rentabilidad neta</small><strong id="net">—</strong></div>
+<div class="metric"><small>Cashflow mensual</small><strong id="cash">—</strong></div>
+<div class="metric"><small>Inversión total</small><strong id="total">—</strong></div>
+<div class="metric"><small>Alquiler anual neto</small><strong id="annual">—</strong></div>
+<div class="metric"><small>Cuota hipotecaria</small><strong id="payment">—</strong></div>
+</div>
+<div class="recommend">
+<div class="rec"><small>🎯 Precio máximo orientativo*</small><strong id="maxPrice">—</strong></div>
+<div class="rec purple"><small>🏠 Alquiler mínimo necesario*</small><strong id="minRent">—</strong></div>
+</div>
+<div class="tip" id="tip"><b>💡 Consejo:</b> Calcula la operación para descubrir si el precio, el alquiler y la financiación están equilibrados.</div>
+<small style="display:block;color:#8a95a5;margin-top:9px">*Estimación orientativa para alcanzar un 4% de rentabilidad neta. No es asesoramiento financiero.</small>
+</section>
+</div>
+
+<section class="premium" id="premium">
+<div><h2>👑 Obtén el análisis completo</h2><p>Informe Premium con escenarios, sensibilidad y recomendaciones para tomar una decisión.</p>
+<ul><li>✓ Precio máximo</li><li>✓ Alquiler mínimo</li><li>✓ Escenarios</li><li>✓ Proyección</li><li>✓ Informe PDF</li></ul></div>
+<button onclick="alert('Próximamente: pago seguro e informe PDF personalizado.')">Obtener informe — 4,99 € →</button>
+</section>
+
+<section class="features" id="ventajas">
+<div class="feature"><div class="icon">🎯</div><h3>Ahorra dinero</h3><p>Detecta rápidamente operaciones poco rentables.</p></div>
+<div class="feature"><div class="icon">🛡️</div><h3>Ten en cuenta los gastos</h3><p>Compra, reforma, vacancia, gastos e hipoteca.</p></div>
+<div class="feature"><div class="icon">📊</div><h3>Decide con datos</h3><p>Convierte las cifras del anuncio en una primera evaluación.</p></div>
+<div class="feature"><div class="icon">⚡</div><h3>En menos de 1 minuto</h3><p>Sin registros y directamente desde tu navegador.</p></div>
+</section>
+</main>
+
+<footer id="como"><div class="wrap foot"><div class="logo"><span class="logo-mark">⌂</span>Piso<span>Rentable</span></div><div class="legal">Herramienta orientativa · Privacidad · Aviso legal · Contacto</div></div></footer>
+
+<script>
+const eur=n=>new Intl.NumberFormat('es-ES',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(n);
+function mortgage(principal,rate,years){const r=rate/100/12,n=years*12;if(!principal||!r||!n)return 0;return principal*r/(1-Math.pow(1+r,-n))}
+function calculate(){
+ const p=+document.getElementById('price').value||0,bp=+document.getElementById('buyPct').value||0,re=+document.getElementById('reno').value||0,rent=+document.getElementById('rent').value||0,v=+document.getElementById('vacancy').value||0,ex=+document.getElementById('expenses').value||0,down=+document.getElementById('down').value||0,rate=+document.getElementById('rate').value||0,years=+document.getElementById('years').value||0;
+ const total=p*(1+bp/100)+re, annual=rent*Math.max(0,12-v), netAnnual=Math.max(0,annual-ex), gross=total?annual/total:0, net=total?netAnnual/total:0;
+ const loan=Math.max(0,p-down), pay=mortgage(loan,rate,years), cash=netAnnual-pay*12;
+ const target=.04, maxTotal=target?netAnnual/target:0, maxPrice=Math.max(0,(maxTotal-re)/(1+bp/100));
+ const minAnnual=ex+pay*12, minRent=Math.max(0,minAnnual/Math.max(1,12-v));
+ document.getElementById('gross').textContent=(gross*100).toFixed(2)+'%';
+ document.getElementById('net').textContent=(net*100).toFixed(2)+'%'; document.getElementById('net').className=net>=.04?'positive':net>=.03?'':'negative';
+ document.getElementById('cash').textContent=eur(cash/12);document.getElementById('cash').className=cash>=0?'positive':'negative';
+ document.getElementById('total').textContent=eur(total);document.getElementById('annual').textContent=eur(netAnnual);document.getElementById('payment').textContent=eur(pay);
+ document.getElementById('maxPrice').textContent=eur(maxPrice);document.getElementById('minRent').textContent=eur(minRent)+' / mes';
+ let s=document.getElementById('status'),t=document.getElementById('tip');
+ if(net>=.05){s.style.background='#eaf8f0';s.innerHTML='<strong>🟢 Operación atractiva</strong><p>La rentabilidad estimada supera el 5% neto.</p>';t.innerHTML='<b>💡 Lectura rápida:</b> Sobre el papel, la operación tiene una rentabilidad interesante. Revisa financiación, impuestos y riesgos antes de comprar.'}
+ else if(net>=.04){s.style.background='#f1f8e9';s.innerHTML='<strong>🟢 Operación razonable</strong><p>Supera el objetivo orientativo del 4% neto.</p>';t.innerHTML='<b>💡 Lectura rápida:</b> Puede tener sentido, pero el precio y el alquiler son determinantes. Compara varias operaciones.'}
+ else if(net>=.03){s.style.background='#fff7e6';s.innerHTML='<strong>🟠 Hay que estudiarla</strong><p>La rentabilidad queda por debajo del 4% neto.</p>';t.innerHTML='<b>💡 Consejo:</b> Negociar el precio o conseguir un alquiler mayor podría cambiar la operación.'}
+ else{s.style.background='#fff0ef';s.innerHTML='<strong>🔴 Rentabilidad baja</strong><p>La operación queda bastante por debajo del objetivo orientativo.</p>';t.innerHTML='<b>💡 Consejo:</b> Revisa el precio de compra, los gastos y el alquiler antes de avanzar.'}
+}
+calculate();
+</script>
+</body></html>

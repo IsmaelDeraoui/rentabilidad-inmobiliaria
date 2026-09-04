@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://ismaelderaoui.github.io/rentabilidad-inmobiliaria/sitemap.xml
