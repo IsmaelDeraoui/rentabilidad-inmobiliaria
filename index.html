@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>¿Me sale rentable? — Analizador inmobiliario</title>
+<meta name="description" content="Calcula en 60 segundos si un piso para alquilar tiene sentido: rentabilidad, cashflow, inversión total y punto de equilibrio.">
+<style>
+body{font-family:system-ui,-apple-system,Segoe UI,sans-serif;max-width:900px;margin:auto;padding:24px;background:#f6f7f9;color:#18202a}
+.card{background:white;padding:24px;border-radius:18px;margin:16px 0;box-shadow:0 3px 18px #00000010}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+label{font-size:14px;font-weight:600;display:block}input{width:100%;padding:11px;margin-top:6px;border:1px solid #ccd2da;border-radius:10px;box-sizing:border-box}
+button{padding:13px 18px;border:0;border-radius:10px;background:#18202a;color:white;font-weight:700;cursor:pointer;margin-top:18px}
+.result{font-size:20px;font-weight:800}.good{color:#16733b}.warn{color:#a05a00}.bad{color:#b42318}
+small{color:#667085} h1{margin-bottom:6px}
+@media(max-width:650px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="card">
+<h1>¿Me sale rentable este piso?</h1>
+<p>Analiza una inversión inmobiliaria en menos de 60 segundos.</p>
+<small>Estimación orientativa. No constituye asesoramiento financiero, fiscal o legal.</small>
+</div>
+<div class="card">
+<div class="grid">
+<div><label>Precio de compra (€)<input id="price" type="number" value="100000"></label></div>
+<div><label>Gastos de compra (€)<input id="buycost" type="number" value="10000"></label></div>
+<div><label>Reforma/mobiliario (€)<input id="reno" type="number" value="5000"></label></div>
+<div><label>Alquiler mensual (€)<input id="rent" type="number" value="750"></label></div>
+<div><label>Meses alquilados/año<input id="months" type="number" value="11" min="1" max="12"></label></div>
+<div><label>Gastos anuales (€)<input id="expenses" type="number" value="1800"></label></div>
+<div><label>Entrada (€)<input id="down" type="number" value="30000"></label></div>
+<div><label>Interés hipotecario (%)<input id="rate" type="number" value="3" step="0.1"></label></div>
+<div><label>Años de hipoteca<input id="years" type="number" value="25"></label></div>
+</div>
+<button onclick="calc()">Analizar operación</button>
+</div>
+<div id="out" class="card" style="display:none"></div>
+<script>
+function euro(x){return new Intl.NumberFormat('es-ES',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(x)}
+function calc(){
+ const p=+price.value||0, bc=+buycost.value||0, re=+reno.value||0, r=+rent.value||0, m=+months.value||0, ex=+expenses.value||0;
+ const total=p+bc+re, annual=r*m, net=annual-ex, gross=annual/total, netyield=net/total;
+ const downp=+down.value||0, loan=Math.max(0,p-downp), annualRate=(+rate.value||0)/100, n=(+years.value||0)*12;
+ const mr=annualRate/12, payment=loan&&mr ? loan*mr/(1-Math.pow(1+mr,-n)) : 0;
+ const cash=annual-ex-payment*12, cashYield=downp?cash/downp:0;
+ const cls=netyield>=.05?'good':netyield>=.035?'warn':'bad';
+ let verdict=netyield>=.05?'🟢 Buena sobre el papel':netyield>=.035?'🟠 Hay que estudiarla':'🔴 Rentabilidad baja';
+ out.style.display='block';
+ out.innerHTML=`<h2>${verdict}</h2>
+ <div class="grid">
+ <div><small>Inversión total</small><div class="result">${euro(total)}</div></div>
+ <div><small>Ingresos anuales reales</small><div class="result">${euro(annual)}</div></div>
+ <div><small>Rentabilidad bruta</small><div class="result">${(gross*100).toFixed(2)}%</div></div>
+ <div><small>Rentabilidad neta</small><div class="result ${cls}">${(netyield*100).toFixed(2)}%</div></div>
+ <div><small>Cuota hipotecaria estimada</small><div class="result">${euro(payment)}/mes</div></div>
+ <div><small>Cashflow tras hipoteca</small><div class="result ${cash>=0?'good':'bad'}">${euro(cash/12)}/mes</div></div>
+ </div>
+ <hr><p><b>Punto de equilibrio de alquiler:</b> ${euro((ex+payment*12)/m/1)}</p>
+ <small>El resultado no incluye todos los posibles impuestos, seguros, mantenimiento extraordinario ni variaciones futuras del alquiler. Comprueba las cifras antes de tomar decisiones.</small>`;
+ out.scrollIntoView({behavior:'smooth'});
+}
+</script>
+</body>
+</html>
