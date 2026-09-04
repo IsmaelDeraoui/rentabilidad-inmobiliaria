@@ -1,0 +1,13 @@
+PisoRentable SEO v2
+
+SUBE A GITHUB:
+1. Abre el repositorio rentabilidad-inmobiliaria.
+2. Sube las 10 carpetas nuevas a la raíz del repositorio.
+3. Reemplaza sitemap.xml por el nuevo sitemap.xml.
+4. Mantén el index.html actual de tu web.
+
+IMPORTANTE:
+- No subas este ZIP dentro de la web.
+- Las carpetas deben quedar directamente en la raíz.
+- Después, en Google Search Console, vuelve a enviar sitemap.xml.
+- No es necesario solicitar indexación de las 10 páginas una por una de inmediato; Google puede descubrirlas mediante el sitemap.
